@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pichanga App</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1f1f1f;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00c853;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      background: #00c853;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .info {
+      background: #2b2b2b;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .mensaje {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>Pichanga App</h1>
+
+  <div class="info">
+    <p><strong>Valor:</strong> $3.000</p>
+    <p><strong>Código de cancha:</strong> ALG-001</p>
+    <p><strong>Estado:</strong> Abierto</p>
+  </div>
+
+  <input type="text" id="nombre" placeholder="Nombre completo">
+  <input type="text" id="rut" placeholder="RUT">
+  <input type="text" id="whatsapp" placeholder="WhatsApp">
+
+  <select id="posicion">
+    <option value="">Selecciona posición</option>
+    <option>Arquero</option>
+    <option>Defensa</option>
+    <option>Mediocampo</option>
+    <option>Delantero</option>
+  </select>
+
+  <select id="nivel">
+    <option value="">Selecciona nivel</option>
+    <option>Bajo</option>
+    <option>Medio</option>
+    <option>Alto</option>
+  </select>
+
+  <input type="text" id="codigo" value="ALG-001" placeholder="Código de cancha">
+
+  <button onclick="inscribir()">Inscribirme</button>
+
+  <div class="mensaje" id="mensaje"></div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxFQ29q_n3Y05RIVkuQiEPPe524IA0gPrG_EHPixUEIBcHeBi0gS8CR-mSGHoLfVdmZ/exec";
+
+function inscribir() {
+  const mensaje = document.getElementById("mensaje");
+
+  const datos = {
+    nombre: document.getElementById("nombre").value.trim(),
+    rut: document.getElementById("rut").value.trim(),
+    whatsapp: document.getElementById("whatsapp").value.trim(),
+    posicion: document.getElementById("posicion").value,
+    nivel: document.getElementById("nivel").value,
+    codigo: document.getElementById("codigo").value.trim()
+  };
+
+  if (!datos.nombre || !datos.rut || !datos.whatsapp || !datos.posicion || !datos.nivel || !datos.codigo) {
+    mensaje.style.color = "orange";
+    mensaje.innerHTML = "Completa todos los campos";
+    return;
+  }
+
+  mensaje.style.color = "white";
+  mensaje.innerHTML = "Enviando inscripción...";
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(datos)
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.ok) {
+      mensaje.style.color = "#00c853";
+      mensaje.innerHTML = "Inscripción enviada correctamente. Estado: Por pagar";
+
+      document.getElementById("nombre").value = "";
+      document.getElementById("rut").value = "";
+      document.getElementById("whatsapp").value = "";
+      document.getElementById("posicion").value = "";
+      document.getElementById("nivel").value = "";
+      document.getElementById("codigo").value = "ALG-001";
+    } else {
+      mensaje.style.color = "red";
+      mensaje.innerHTML = "Error al inscribir";
+    }
+  })
+  .catch(err => {
+    mensaje.style.color = "red";
+    mensaje.innerHTML = "Error de conexión";
+    console.log(err);
+  });
+}
+</script>
+
+</body>
+</html>
